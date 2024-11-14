@@ -28,7 +28,7 @@ export const Main = () => {
     logging.info('Define Controller Routing');
     logging.info('----------------------------------------');
     app.get('/main/healthcheck', (_req, res, _next) => {
-        return res.status(200).json({ test: 'app Running' });
+        return res.status(200).json({ test: 'App Running' });
     });
 
     logging.info('----------------------------------------');

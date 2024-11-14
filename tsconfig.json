@@ -8,10 +8,10 @@
         "skipLibCheck": true,
         "moduleResolution": "Node16",
         "outDir": "build",
-        "types": ["node"], // Add node types
+        "types": ["jest"],
         "allowSyntheticDefaultImports": true, // Optional for compatibility with CommonJS modules
         "experimentalDecorators": true
     },
     "exclude": ["node_modules/"],
-    "include": ["src/**/*.ts"]
+    "include": ["src/**/*.ts", "test/**/*.ts", "jest.config.ts"]
 }
