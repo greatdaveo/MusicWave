@@ -5,10 +5,27 @@ import './config/logging';
 import { loggingHandler } from './middleware/logging.handler';
 import { corsHandler } from './middleware/corsHandler';
 import { routeNotFound } from './middleware/routeNotFound';
-import { SERVER } from './config/config';
+import { server } from './config/config';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 
+import UserRoute from './routes/auth.route';
+
+const router = express();
 export const app = express();
+app.use(cookieParser());
 export let httpServer: ReturnType<typeof http.createServer>;
+
+mongoose
+    .connect(server.MongoDB_URL)
+    .then(() => {
+        logging.info('Connected to MongoDB');
+        Main();
+    })
+    .catch((error: any) => {
+        logging.error('Unable to connect to MongoDB!');
+        logging.error(error);
+    });
 
 export const Main = () => {
     logging.info('----------------------------------------');
@@ -31,6 +48,9 @@ export const Main = () => {
         return res.status(200).json({ test: 'App Running' });
     });
 
+    // Routes
+    app.use('/api/auth', UserRoute);
+
     logging.info('----------------------------------------');
     logging.info('Define Controller Routing');
     logging.info('----------------------------------------');
@@ -40,13 +60,11 @@ export const Main = () => {
     logging.info('Start Server');
     logging.info('----------------------------------------');
     httpServer = http.createServer(app);
-    httpServer.listen(SERVER.SERVER_PORT, () => {
+    httpServer.listen(server.SERVER_PORT, () => {
         logging.info('----------------------------------------');
-        logging.info('Server Started' + SERVER.SERVER_HOSTNAME);
+        logging.info('Server Started' + server.SERVER_HOSTNAME);
         logging.info('----------------------------------------');
     });
 };
 
 export const Shutdown = (callback: any) => httpServer && httpServer.close(callback);
-
-Main();
