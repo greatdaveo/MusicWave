@@ -94,7 +94,7 @@ export const loginUser = async (req: Request, res: Response, _next: NextFunction
             res.status(400).json({ status: 400, message: 'Invalid email or password' });
         }
     } else {
-        res.status(400).json({ status: 400, message: "This user doesn't exist, please register" });
+        res.status(401).json({ status: 401, message: "This user doesn't exist, please register" });
     }
 };
 
