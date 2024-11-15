@@ -99,5 +99,5 @@ export const loginUser = async (req: Request, res: Response, _next: NextFunction
 };
 
 export const logoutUser = async (_req: Request, res: Response, _next: NextFunction) => {
-    res.cookie('access_token', '', { path: '/', httpOnly: true, expires: new Date(0) });
+    res.cookie('access_token', '', { path: '/', httpOnly: true, expires: new Date(0) }).json({ status: 200, message: 'Logout successful' });
 };

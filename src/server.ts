@@ -9,7 +9,8 @@ import { server } from './config/config';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
-import UserRoute from './routes/auth.route';
+import AuthRoute from './routes/auth.route';
+import UserRoute from './routes/user.route';
 
 const router = express();
 export const app = express();
@@ -49,7 +50,8 @@ export const Main = () => {
     });
 
     // Routes
-    app.use('/api/auth', UserRoute);
+    app.use('/api/auth', AuthRoute);
+    app.use('/api/users', UserRoute);
 
     logging.info('----------------------------------------');
     logging.info('Define Controller Routing');
