@@ -3,6 +3,7 @@ import {
   addSongToPlaylist,
   createPlayList,
   deletePlayList,
+  deleteSongFromPlaylist,
   getSinglePlayList,
   updatePlayList,
 } from "../controllers/playlist.controller";
@@ -18,6 +19,11 @@ router.post(
   "/playlist/:playlistId/songs/:songId",
   protectedRoute,
   addSongToPlaylist
+);
+router.delete(
+  "/playlist/:playlistId/songs/:songId",
+  protectedRoute,
+  deleteSongFromPlaylist
 );
 
 export default router;

@@ -117,7 +117,6 @@ export const addSongToPlaylist = async (
 ) => {
   try {
     const { playlistId, songId } = req.params;
-    // const userId = req.user?._id;
 
     const playList = await PlaylistModel.findById(playlistId);
     if (!playList) {
@@ -138,16 +137,64 @@ export const addSongToPlaylist = async (
     ) as unknown as mongoose.Schema.Types.ObjectId;
 
     if (playList.songs.includes(songObjectId)) {
-      res
+      return res
         .status(200)
         .json({ status: 200, message: "Song already exist in the playlist" });
     }
+
     playList.songs.push(songObjectId);
     await playList.save();
 
     return res.status(201).json({
       status: 201,
       message: "Song added to playlist successfully",
+      data: playList,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      status: 401,
+      message: "An error occurred while adding the song to the playlist",
+    });
+  }
+};
+
+export const deleteSongFromPlaylist = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { playlistId, songId } = req.params;
+
+    const playList = await PlaylistModel.findById(playlistId);
+    const song = await songModel.findById(songId);
+
+    const songObjectId = new mongoose.Types.ObjectId(
+      songId
+    ) as unknown as mongoose.Schema.Types.ObjectId;
+
+    if (!playList) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Playlist not found" });
+    }
+
+    const songIndex = playList.songs.findIndex(
+      (song) => song.toString() === songId
+    );
+
+    if (songIndex === -1) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Song is not in the playlist" });
+    }
+
+    playList.songs.splice(songIndex, 1);
+    await playList.save();
+
+    return res.status(200).json({
+      status: 200,
+      message: "Song removed from playlist successfully",
       data: playList,
     });
   } catch (error: any) {
