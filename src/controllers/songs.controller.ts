@@ -33,7 +33,7 @@ export const getSongs = async (
     } else {
       sortOptions.title = 1;
     }
-    
+
     // For Pagination
     const skip = Number(page) * Number(size);
     const limit = Number(size);
@@ -64,5 +64,41 @@ export const getSongs = async (
       status: 500,
       message: "An error occurred while retrieving songs",
     });
+  }
+};
+
+export const getSingleSong = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Please provide song id" });
+    }
+
+    const song = await SongModel.findById(id);
+    if (!song) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "This song was not found" });
+    } else {
+      res.status(200).json({
+        status: 400,
+        message: "Received a single song successfully",
+        data: song,
+      });
+    }
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({
+        status: 500,
+        message: "An error occurred while fetching the song",
+      });
   }
 };
