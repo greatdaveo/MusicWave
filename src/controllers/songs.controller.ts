@@ -158,32 +158,3 @@ export const PlayBackState = async (
     });
   }
 };
-
-export const PlayList = async (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-  try {
-    const userId = req.user?._id;
-    const { title, description, songs = [] } = req.body;
-
-    const newPlaylist = await PlaylistModel.create({
-      user: userId,
-      songs,
-      title,
-      description,
-    });
-
-    return res.status(201).json({
-      status: 201,
-      message: "Playlist added successfully",
-      data: newPlaylist,
-    });
-  } catch (error: any) {
-    return res.status(500).json({
-      status: 500,
-      message: "An error occurred while fetching the song",
-    });
-  }
-};
