@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import AuthRoute from "./routes/auth.route";
 import UserRoute from "./routes/user.route";
 import SongRoute from "./routes/song.route";
+import PlaylistRoute from "./routes/playlist.route";
 
 const router = express();
 export const app = express();
@@ -54,6 +55,7 @@ export const Main = () => {
   app.use("/api/auth", AuthRoute);
   app.use("/api/user", UserRoute);
   app.use("/api", SongRoute);
+  app.use("/api", PlaylistRoute);
 
   logging.info("----------------------------------------");
   logging.info("Define Controller Routing");
