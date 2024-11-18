@@ -82,6 +82,28 @@ export const updatePlayList = async (
       });
     }
   } catch (error) {
-    res.status(401).json({ status: 401, message: "User not found" });
+    res
+      .status(401)
+      .json({ status: 401, message: "An occurred when updating the playlist" });
+  }
+};
+
+export const deletePlayList = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    await PlaylistModel.findByIdAndDelete(id);
+    res.status(200).json({
+      status: 200,
+      message: "Playlist deleted successfully",
+      data: {},
+    });
+  } catch (error) {
+    res
+      .status(401)
+      .json({ status: 401, message: "An occurred when updating the playlist" });
   }
 };
