@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import PlaylistModel from "../models/playlist.model";
+import songModel from "../models/song.model";
+import mongoose from "mongoose";
 
 export const createPlayList = async (
   req: Request,
@@ -105,5 +107,53 @@ export const deletePlayList = async (
     res
       .status(401)
       .json({ status: 401, message: "An occurred when updating the playlist" });
+  }
+};
+
+export const addSongToPlaylist = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { playlistId, songId } = req.params;
+    // const userId = req.user?._id;
+
+    const playList = await PlaylistModel.findById(playlistId);
+    if (!playList) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Playlist was not found" });
+    }
+
+    const song = await songModel.findById(songId);
+    if (!song) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "Song was not found" });
+    }
+
+    const songObjectId = new mongoose.Types.ObjectId(
+      songId
+    ) as unknown as mongoose.Schema.Types.ObjectId;
+
+    if (playList.songs.includes(songObjectId)) {
+      res
+        .status(200)
+        .json({ status: 200, message: "Song already exist in the playlist" });
+    }
+    playList.songs.push(songObjectId);
+    await playList.save();
+
+    return res.status(201).json({
+      status: 201,
+      message: "Song added to playlist successfully",
+      data: playList,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      status: 401,
+      message: "An error occurred while adding the song to the playlist",
+    });
   }
 };
