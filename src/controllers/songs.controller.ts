@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import SongModel from "../models/song.model";
+import PlaybackModel from "../models/playback.model";
 
 export const getSongs = async (
   req: Request,
@@ -70,7 +71,7 @@ export const getSongs = async (
 export const getSingleSong = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   try {
     const { id } = req.params;
@@ -87,18 +88,72 @@ export const getSingleSong = async (
         .status(404)
         .json({ status: 404, message: "This song was not found" });
     } else {
-      res.status(200).json({
+      return res.status(200).json({
         status: 400,
         message: "Received a single song successfully",
         data: song,
       });
     }
   } catch (error: any) {
-    return res
-      .status(500)
-      .json({
-        status: 500,
-        message: "An error occurred while fetching the song",
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching the song",
+    });
+  }
+};
+
+export const PlayBackState = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?._id;
+    const { state } = req.body;
+
+    if (!id || state === undefined) {
+      return res.status(400).json({
+        status: 400,
+        message: "Please provide song ID and play back state",
       });
+    }
+
+    const song = await SongModel.findById(id);
+    let playBack = await PlaybackModel.findOne({ user: userId, song: id });
+
+    if (song) {
+      let isCompleted = state >= song?.duration;
+
+      if (playBack) {
+        playBack.currentState = state;
+        playBack.isCompleted = isCompleted;
+        await playBack.save();
+      } else {
+        playBack = new PlaybackModel({
+          user: userId,
+          song: id,
+          currentState: state,
+          isCompleted,
+        });
+
+        await playBack.save();
+      }
+    } else {
+      return res
+        .status(404)
+        .json({ status: 404, message: "This song was not found" });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "Song playback record saved successfully",
+      data: playBack,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching the song",
+    });
   }
 };
