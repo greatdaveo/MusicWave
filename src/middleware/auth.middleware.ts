@@ -57,6 +57,20 @@ export const protectedRoute = async (
   }
 };
 
+export const artisteOnly = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user && req.user.accountType === "artiste") {
+    next();
+  } else {
+    return res
+      .status(401)
+      .json({ status: 401, message: "Sorry, only artiste is authorized" });
+  }
+};
+
 export const userLoginStatus = async (
   req: Request,
   res: Response,

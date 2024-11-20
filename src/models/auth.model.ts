@@ -7,10 +7,13 @@ export interface IAuthModel extends Document {
   password: string;
   phoneNumber: string;
   accountType: string;
-  country: string;
-  countryCode: string;
-  state: string;
-  address: string;
+  address: {
+    country: string;
+    state: string;
+    countryCode: string;
+  };
+  following: mongoose.Types.ObjectId[];
+  followers: mongoose.Types.ObjectId[];
 }
 
 const UserSchema: Schema<IAuthModel> = new Schema(
@@ -46,23 +49,37 @@ const UserSchema: Schema<IAuthModel> = new Schema(
       enum: ["user", "artiste"],
     },
 
-    country: {
-      type: String,
-    },
-
-    countryCode: {
-      type: String,
-      default: "+234",
-    },
-
-    state: {
-      type: String,
-    },
-
     address: {
-      type: String,
+      country: {
+        type: String,
+      },
+
+      countryCode: {
+        type: String,
+        default: "+234",
+      },
+      state: {
+        type: String,
+      },
     },
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
+
   { timestamps: true }
 );
 

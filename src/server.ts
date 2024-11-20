@@ -13,8 +13,8 @@ import AuthRoute from "./routes/auth.route";
 import UserRoute from "./routes/user.route";
 import SongRoute from "./routes/song.route";
 import PlaylistRoute from "./routes/playlist.route";
+import ArtisteRoute from "./routes/artiste.route";
 
-const router = express();
 export const app = express();
 app.use(cookieParser());
 export let httpServer: ReturnType<typeof http.createServer>;
@@ -56,6 +56,7 @@ export const Main = () => {
   app.use("/api/user", UserRoute);
   app.use("/api", SongRoute);
   app.use("/api", PlaylistRoute);
+  app.use("/api", ArtisteRoute);
 
   logging.info("----------------------------------------");
   logging.info("Define Controller Routing");
