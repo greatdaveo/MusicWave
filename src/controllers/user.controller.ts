@@ -67,10 +67,10 @@ export const followArtiste = async (
   next: NextFunction
 ) => {
   try {
-    const { artistId } = req.params;
+    const { artisteId } = req.params;
     const userId = req.user?._id;
 
-    const artiste = await UserModel.findById(artistId);
+    const artiste = await UserModel.findById(artisteId);
     const user = await UserModel.findById(userId);
 
     if (!user) {
@@ -83,18 +83,18 @@ export const followArtiste = async (
         .json({ status: 401, message: "This user is not an artiste" });
     }
 
-    const artistObjectId = new mongoose.Types.ObjectId(
-      artistId
+    const artisteObjectId = new mongoose.Types.ObjectId(
+      artisteId
     ) as unknown as mongoose.Types.ObjectId;
 
-    if (user?.following.includes(artistObjectId)) {
+    if (user?.following.includes(artisteObjectId)) {
       return res.status(400).json({
         status: 400,
         message: "You are already following this artiste",
       });
     }
 
-    user?.following.push(artistObjectId);
+    user?.following.push(artisteObjectId);
     artiste?.followers.push(user?.id);
 
     await user.save();
@@ -107,6 +107,35 @@ export const followArtiste = async (
     return res.status(500).json({
       status: 500,
       message: "An error occurred while following the user",
+    });
+  }
+};
+
+export const getArtiste = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { artisteId } = req.params;
+    const artiste = await UserModel.findById(artisteId).select("-password");
+
+    if (!artiste) {
+      return res.status(404).json({
+        status: 404,
+        message: "Artiste does not exist",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: `Retrieve ${artiste.name} data successfully`,
+      data: artiste,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching artiste data",
     });
   }
 };
