@@ -42,12 +42,22 @@ export const updateUserProfile = async (
   const user = await UserModel.findById(req.user?._id);
 
   if (user) {
-    const { name, email, phoneNumber, accountType, address } = user;
+    const {
+      name,
+      email,
+      phoneNumber,
+      accountType,
+      address,
+      interestedTags,
+      favoriteGenres,
+    } = user;
     user.name = req.body.name || name;
     user.email = req.body.email || email;
     user.phoneNumber = req.body.phoneNumber || phoneNumber;
     user.accountType = req.body.accountType || accountType;
     user.address = req.body.address || address;
+    user.interestedTags = req.body.interestedTags || interestedTags;
+    user.favoriteGenres = req.body.favoriteGenres || favoriteGenres;
 
     const updatedUser = await user?.save();
 

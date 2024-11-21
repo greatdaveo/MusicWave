@@ -19,6 +19,8 @@ export const registerUser = async (
     phoneNumber,
     accountType,
     address,
+    interestedTags,
+    favoriteGenres,
     following,
     followers,
   } = req.body;
@@ -49,6 +51,8 @@ export const registerUser = async (
     phoneNumber,
     accountType,
     address,
+    interestedTags,
+    favoriteGenres,
     following,
     followers,
   });
@@ -64,6 +68,8 @@ export const registerUser = async (
       phoneNumber,
       accountType,
       address,
+      interestedTags,
+      favoriteGenres,
       following,
       followers,
     } = newUser;
@@ -81,6 +87,8 @@ export const registerUser = async (
         phoneNumber,
         accountType,
         address,
+        interestedTags,
+        favoriteGenres,
         following,
         followers,
       },
