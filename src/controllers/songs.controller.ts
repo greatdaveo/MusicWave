@@ -176,10 +176,8 @@ export const songRecommendation = async (
 
     const recommendedSongs = await SongModel.findOne({
       $or: [
-        {
-          tags: { $in: user?.interestedTags },
-          genre: { $in: user?.favoriteGenres },
-        },
+        { tags: { $in: user?.interestedTags } },
+        { genre: { $in: user?.favoriteGenres } },
       ],
     })
       .skip(Number(page) * Number(size))
@@ -192,10 +190,48 @@ export const songRecommendation = async (
       data: recommendedSongs,
     });
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     return res.status(500).json({
       status: 500,
       message: "An error occurred while fetching recommended songs",
+    });
+  }
+};
+
+export const getLatestSongs = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { page = 0, size = 10 } = req.query;
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const songs = await SongModel.find({
+      createdAt: { $gte: thirtyDaysAgo },
+    })
+      .skip(Number(page) * Number(size))
+      .limit(Number(size))
+      .exec();
+
+    if (!songs) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "No latest songs found" });
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: "Retrieved all newly released songs",
+      data: songs,
+    });
+  } catch (error: any) {
+    console.error("Error fetching new releases:", error);
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching new releases",
     });
   }
 };
