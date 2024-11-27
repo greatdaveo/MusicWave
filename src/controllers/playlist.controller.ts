@@ -204,3 +204,28 @@ export const deleteSongFromPlaylist = async (
     });
   }
 };
+
+export const getPlaylist = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const playList = await PlaylistModel.find();
+
+    if (!playList) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "No playlist found" });
+    }
+
+    return res
+      .status(200)
+      .json({ status: 200, message: "Get all playlist", data: playList });
+  } catch (error) {
+    return res.status(401).json({
+      status: 401,
+      message: "An error occurred while adding the song to the playlist",
+    });
+  }
+};
