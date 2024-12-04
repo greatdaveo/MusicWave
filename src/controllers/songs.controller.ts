@@ -2,6 +2,60 @@ import { Request, Response, NextFunction } from "express";
 import SongModel from "../models/song.model";
 import PlaybackModel from "../models/playback.model";
 import UserModel from "../models/auth.model";
+import { Multer } from "multer";
+
+declare global {
+  namespace Express {
+    interface Request {
+      file?: Multer.File;
+    }
+  }
+}
+
+export const uploadSongs = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { title, duration, year, tags, genre } = req.body;
+    const artistId = req.user?.id;
+    const musicFile = req?.file;
+
+    if (!musicFile) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Music file is required." });
+    }
+
+    if (!title || !duration || !year || !tags || !genre) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "Please fill all fields" });
+    }
+
+    const newSong = await SongModel.create({
+      title,
+      duration,
+      year,
+      tags,
+      genre,
+      artist: artistId,
+      filePath: req.file?.path,
+    });
+
+    res.status(201).json({
+      status: 201,
+      message: "Song uploaded successfully.",
+      data: newSong,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "An error occurred while uploading the song.",
+    });
+  }
+};
 
 export const getSongs = async (
   req: Request,

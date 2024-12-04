@@ -1,17 +1,24 @@
 import mongoose, { Document, Schema } from "mongoose";
-import express from "express";
 
 export interface ISongModel extends Document {
+  artist: mongoose.Schema.Types.ObjectId;
   title: string;
   year: number;
   duration: number;
   tags?: [string];
   description?: string;
   genre?: string;
+  filePath: string;
 }
 
 const SongSchema: Schema<ISongModel> = new Schema(
   {
+    artist: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+
     title: {
       type: String,
     },
@@ -36,6 +43,8 @@ const SongSchema: Schema<ISongModel> = new Schema(
     description: { type: String },
 
     genre: { type: String },
+
+    filePath: { type: String },
   },
 
   { timestamps: true }

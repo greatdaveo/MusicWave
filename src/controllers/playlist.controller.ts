@@ -205,7 +205,7 @@ export const deleteSongFromPlaylist = async (
   }
 };
 
-export const getPlaylist = async (
+export const getAllPlaylist = async (
   req: Request,
   res: Response,
   _next: NextFunction
@@ -225,7 +225,7 @@ export const getPlaylist = async (
   } catch (error) {
     return res.status(401).json({
       status: 401,
-      message: "An error occurred while adding the song to the playlist",
+      message: "An error occurred while fetching  all playlist",
     });
   }
 };

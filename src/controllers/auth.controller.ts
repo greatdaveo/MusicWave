@@ -21,6 +21,7 @@ export const registerUser = async (
     address,
     interestedTags,
     favoriteGenres,
+    likes,
     following,
     followers,
   } = req.body;
@@ -53,6 +54,7 @@ export const registerUser = async (
     address,
     interestedTags,
     favoriteGenres,
+    likes,
     following,
     followers,
   });
@@ -70,6 +72,7 @@ export const registerUser = async (
       address,
       interestedTags,
       favoriteGenres,
+      likes,
       following,
       followers,
     } = newUser;
@@ -89,6 +92,7 @@ export const registerUser = async (
         address,
         interestedTags,
         favoriteGenres,
+        likes,
         following,
         followers,
       },

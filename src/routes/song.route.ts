@@ -5,15 +5,26 @@ import {
   getSongs,
   PlayBackState,
   songRecommendation,
+  uploadSongs,
 } from "../controllers/songs.controller";
-import { protectedRoute } from "../middleware/auth.middleware";
+import { artisteOnly, protectedRoute } from "../middleware/auth.middleware";
+import { getFollowedArtiste } from "../controllers/user.controller";
+import { upload } from "../middleware/songs.middleware";
 
 const router = express.Router();
 
+router.get("/artist/songs", protectedRoute, getFollowedArtiste);
 router.get("/songs/new", protectedRoute, getLatestSongs);
 router.get("/songs/recommended", protectedRoute, songRecommendation);
 router.get("/songs", protectedRoute, getSongs);
 router.get("/songs/:id", protectedRoute, getSingleSong);
+router.post(
+  "/songs/upload",
+  protectedRoute,
+  artisteOnly,
+  upload.single("music"),
+  uploadSongs
+);
 router.post("/songs/:id/state", protectedRoute, PlayBackState);
 
 export default router;

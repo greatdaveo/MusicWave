@@ -14,6 +14,7 @@ export interface IAuthModel extends Document {
   };
   interestedTags: string[];
   favoriteGenres: string[];
+  likes: string[];
   following: mongoose.Types.ObjectId[];
   followers: mongoose.Types.ObjectId[];
 }
@@ -73,6 +74,13 @@ const UserSchema: Schema<IAuthModel> = new Schema(
     ],
 
     favoriteGenres: [
+      {
+        type: String,
+        default: [],
+      },
+    ],
+
+    likes: [
       {
         type: String,
         default: [],

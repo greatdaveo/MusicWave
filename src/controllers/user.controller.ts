@@ -149,3 +149,40 @@ export const getArtiste = async (
     });
   }
 };
+
+export const getFollowedArtiste = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?._id;
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    if (user.accountType === "user") {
+      const followedArtiste = user.following.map((artist) => artist);
+      const artist = await UserModel.findById(followedArtiste);
+      console.log("Followed Artiste", artist);
+
+      return res.status(200).json({
+        status: 200,
+        message: "These are the artiste you are following",
+        // data,
+      });
+    }
+
+    // return res.json({ user });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching artiste data",
+    });
+  }
+};

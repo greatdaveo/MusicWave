@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getFollowedArtiste,
   loggedInUser,
   updateUserProfile,
 } from "../controllers/user.controller";
