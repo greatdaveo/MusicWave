@@ -3,6 +3,7 @@ import SongModel from "../models/song.model";
 import PlaybackModel from "../models/playback.model";
 import UserModel from "../models/auth.model";
 import { Multer } from "multer";
+import mongoose from "mongoose";
 
 declare global {
   namespace Express {
@@ -34,6 +35,25 @@ export const uploadSongs = async (
         .json({ status: 400, message: "Please fill all fields" });
     }
 
+    const artist = await UserModel.findById(artistId);
+    if (!artist || artist?.accountType !== "artiste") {
+      return res.status(403).json({
+        status: 403,
+        message: "Only artiste accounts can upload songs.",
+      });
+    }
+
+    const existingSong = await SongModel.findOne({
+      songs: musicFile.filename,
+    });
+
+    if (existingSong) {
+      return res.status(400).json({
+        status: 400,
+        message: "You have uploaded this song before.",
+      });
+    }
+
     const newSong = await SongModel.create({
       title,
       duration,
@@ -41,15 +61,26 @@ export const uploadSongs = async (
       tags,
       genre,
       artist: artistId,
-      filePath: req.file?.path,
+      songs: musicFile.filename,
     });
+
+    const songObjectId = new mongoose.Types.ObjectId(newSong.id);
+
+    if (artist?.songs?.includes(songObjectId)) {
+      return res
+        .status(400)
+        .json({ status: 400, message: "You have uploaded this song before" });
+    }
+
+    artist?.songs?.push(songObjectId);
+    await artist.save();
 
     res.status(201).json({
       status: 201,
       message: "Song uploaded successfully.",
       data: newSong,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: 500,
       message: "An error occurred while uploading the song.",

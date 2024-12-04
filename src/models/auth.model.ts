@@ -17,6 +17,7 @@ export interface IAuthModel extends Document {
   likes: string[];
   following: mongoose.Types.ObjectId[];
   followers: mongoose.Types.ObjectId[];
+  songs?: mongoose.Types.ObjectId[];
 }
 
 const UserSchema: Schema<IAuthModel> = new Schema(
@@ -100,6 +101,20 @@ const UserSchema: Schema<IAuthModel> = new Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: [],
+      },
+    ],
+
+    songs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Song",
+        default: undefined,
+        validate: {
+          validator: function () {
+            return this.accountType === "artiste";
+          },
+          message: "Only artistes can have songs!",
+        },
       },
     ],
   },

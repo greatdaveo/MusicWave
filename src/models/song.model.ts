@@ -8,7 +8,7 @@ export interface ISongModel extends Document {
   tags?: [string];
   description?: string;
   genre?: string;
-  filePath: string;
+  songs: [string];
 }
 
 const SongSchema: Schema<ISongModel> = new Schema(
@@ -44,7 +44,7 @@ const SongSchema: Schema<ISongModel> = new Schema(
 
     genre: { type: String },
 
-    filePath: { type: String },
+    songs: [{ type: String }],
   },
 
   { timestamps: true }

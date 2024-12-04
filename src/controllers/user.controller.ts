@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import UserModel, { IAuthModel } from "../models/auth.model";
 import mongoose from "mongoose";
+import songModel from "../models/song.model";
 
 // import jwt, { JwtPayload } from 'jsonwebtoken';
 
@@ -169,6 +170,7 @@ export const getFollowedArtiste = async (
     if (user.accountType === "user") {
       const followedArtiste = user.following.map((artist) => artist);
       const artist = await UserModel.findById(followedArtiste);
+      const song = await songModel.findById(artist);
       console.log("Followed Artiste", artist);
 
       return res.status(200).json({
