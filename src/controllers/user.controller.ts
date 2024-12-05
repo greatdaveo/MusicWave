@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import UserModel, { IAuthModel } from "../models/auth.model";
 import mongoose from "mongoose";
-import songModel from "../models/song.model";
+import SongModel from "../models/song.model";
 
 // import jwt, { JwtPayload } from 'jsonwebtoken';
 
@@ -158,7 +158,12 @@ export const getFollowedArtiste = async (
 ) => {
   try {
     const userId = req.user?._id;
-    const user = await UserModel.findById(userId);
+
+    const user = await UserModel.findById(userId).populate(
+      "following",
+      null,
+      "users"
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -167,21 +172,45 @@ export const getFollowedArtiste = async (
       });
     }
 
-    if (user.accountType === "user") {
-      const followedArtiste = user.following.map((artist) => artist);
-      const artist = await UserModel.findById(followedArtiste);
-      const song = await songModel.findById(artist);
-      console.log("Followed Artiste", artist);
+    const page = parseInt(req.query.page as string, 10) || 0;
+    const size = parseInt(req.query.size as string, 10) || 10;
 
-      return res.status(200).json({
-        status: 200,
-        message: "These are the artiste you are following",
-        // data,
+    const followedArtist = user.following;
+    const paginatedArtiste = followedArtist.slice(
+      page * size,
+      page * size + size
+    );
+
+    const artistWithSongs = [];
+    for (const artist of paginatedArtiste) {
+      const songs = await SongModel.find({ artist: artist._id }).select(
+        "title description year tags genre createdAt"
+      );
+
+      const artistObjectId = new mongoose.Types.ObjectId(artist);
+      // console.log("artistObjectId: ", artistObjectId);
+      const artiste = await UserModel.findById(artistObjectId);
+      // console.log("artiste: ", artiste);
+
+      artistWithSongs.push({
+        name: artiste?.name,
+        songs: songs.map((song) => ({
+          title: song.title,
+          description: song.description,
+          year: song.year,
+          tags: song.tags,
+          genre: song.genre,
+        })),
       });
     }
 
-    // return res.json({ user });
-  } catch (error) {
+    return res.status(200).json({
+      status: 200,
+      message: "These are the artiste you are following",
+      data: artistWithSongs,
+    });
+  } catch (error: any) {
+    // console.log(error.message);
     return res.status(500).json({
       status: 500,
       message: "An error occurred while fetching artiste data",
