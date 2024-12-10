@@ -191,6 +191,103 @@ export const getSingleSong = async (
   }
 };
 
+export const saveLikedSongs = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id;
+    const { songId } = req.params;
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const song = await SongModel.findById(songId);
+    const songObjectId = new mongoose.Types.ObjectId(song?.id);
+    // console.log(songObjectId);
+
+    const songIndex = user.likes.indexOf(songObjectId);
+    // console.log(songIndex);
+
+    if (songIndex > -1) {
+      user.likes.splice(songIndex, 1);
+      await user.save();
+      return res.status(200).json({
+        status: 200,
+        message: "Song unlike successfully",
+      });
+    } else {
+      user.likes.push(songObjectId);
+      await user.save();
+      return res.status(200).json({
+        status: 200,
+        message: "Song liked successfully",
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while toggling like",
+    });
+  }
+};
+
+export const getLikedSongs = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?._id;
+    const { page = 0, size = 10 } = req.query;
+
+    const user = await UserModel.findById(userId).populate("likes");
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const likedSongs = user.likes.slice(
+      Number(page) * Number(size),
+      Number(page) + 1 * Number(size)
+    );
+
+    // console.log("LikedSongs", likedSongs);
+
+    const fullSongDetails = await SongModel.find({ _id: { $in: likedSongs } });
+    // console.log("fullSongDetails", fullSongDetails);
+
+    const eachSongs = fullSongDetails.map((song) => ({
+      artist: song.artist,
+      title: song.title,
+      year: song.year,
+      description: song.description,
+      tags: song.tags,
+      genre: song.genre,
+      songs: song.songs,
+    }));
+
+    return res.status(200).json({
+      status: 200,
+      message: "Retrieved all liked songs successfully",
+      data: eachSongs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching liked songs",
+    });
+  }
+};
+
 export const PlayBackState = async (
   req: Request,
   res: Response,
@@ -376,7 +473,6 @@ export const getRecentlyPlayedSongs = async (
     return res.status(500).json({
       status: 500,
       message: "An error occurred while fetching recently played songs",
-      error: error.message,
     });
   }
 };

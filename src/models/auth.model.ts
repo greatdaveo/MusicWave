@@ -14,7 +14,7 @@ export interface IAuthModel extends Document {
   };
   interestedTags: string[];
   favoriteGenres: string[];
-  likes: string[];
+  likes: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
   followers: mongoose.Types.ObjectId[];
   songs?: mongoose.Types.ObjectId[];
@@ -83,7 +83,8 @@ const UserSchema: Schema<IAuthModel> = new Schema(
 
     likes: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "songs",
         default: [],
       },
     ],
