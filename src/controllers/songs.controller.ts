@@ -288,6 +288,41 @@ export const getLikedSongs = async (
   }
 };
 
+export const shareSong = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { songId } = req.params;
+    const song = await SongModel.findById(songId).populate("artist");
+    if (!song) {
+      return res.status(404).json({
+        status: 404,
+        message: "Song not found",
+      });
+    }
+    // console.log(song);
+
+    const shareableLink = `https://musicwave.com/${song.title}/${songId}`;
+
+    return res.status(200).json({
+      status: 200,
+      message: "Shareable link generated successfully",
+      data: {
+        sharable: shareableLink,
+        ...song.toObject(),
+      },
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while generating the shareable link",
+    });
+  }
+};
+
 export const PlayBackState = async (
   req: Request,
   res: Response,

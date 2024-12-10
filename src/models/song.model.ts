@@ -15,7 +15,7 @@ const SongSchema: Schema<ISongModel> = new Schema(
   {
     artist: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "users",
       required: true,
     },
 

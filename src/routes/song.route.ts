@@ -7,6 +7,7 @@ import {
   getSongs,
   PlayBackState,
   saveLikedSongs,
+  shareSong,
   songRecommendation,
   uploadSongs,
 } from "../controllers/songs.controller";
@@ -31,6 +32,7 @@ router.post(
   upload.single("music"),
   uploadSongs
 );
+router.post("/songs/:songId/share", protectedRoute, shareSong);
 router.post("/songs/:id/state", protectedRoute, PlayBackState);
 
 export default router;
