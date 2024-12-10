@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import PlaylistModel from "../models/playlist.model";
 import songModel from "../models/song.model";
+import UserModel from "../models/auth.model";
+
 import mongoose from "mongoose";
 
 export const createPlayList = async (
@@ -226,6 +228,49 @@ export const getAllPlaylist = async (
     return res.status(401).json({
       status: 401,
       message: "An error occurred while fetching  all playlist",
+    });
+  }
+};
+
+export const getUserProfileAndPlaylists = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.params.id;
+    const { page = 0, size = 10 } = req.query;
+
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    // console.log(user);
+
+    const playlists = await PlaylistModel.find({ user: userId })
+      .skip(Number(page) * Number(size))
+      .limit(Number(size));
+    // console.log(playlists);
+
+    return res.status(200).json({
+      status: 200,
+      message: "Retrieved user profile and playlists successfully",
+      data: {
+        name: user.name,
+        playlists: playlists.map((playlist) => ({
+          ...playlist.toObject(),
+        })),
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching user profile and playlists",
+      error: error.message,
     });
   }
 };
