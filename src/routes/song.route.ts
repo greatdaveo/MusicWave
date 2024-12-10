@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getLatestSongs,
+  getRecentlyPlayedSongs,
   getSingleSong,
   getSongs,
   PlayBackState,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 router.get("/artist/songs", protectedRoute, getFollowedArtiste);
 router.get("/songs/new", protectedRoute, getLatestSongs);
+router.get("/songs/recent", protectedRoute, getRecentlyPlayedSongs);
 router.get("/songs/recommended", protectedRoute, songRecommendation);
 router.get("/songs", protectedRoute, getSongs);
 router.get("/songs/:id", protectedRoute, getSingleSong);

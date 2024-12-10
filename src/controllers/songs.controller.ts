@@ -4,6 +4,8 @@ import PlaybackModel from "../models/playback.model";
 import UserModel from "../models/auth.model";
 import { Multer } from "multer";
 import mongoose from "mongoose";
+import playbackModel from "../models/playback.model";
+import { title } from "process";
 
 declare global {
   namespace Express {
@@ -19,7 +21,7 @@ export const uploadSongs = async (
   _next: NextFunction
 ) => {
   try {
-    const { title, duration, year, tags, genre } = req.body;
+    const { title, description, duration, year, tags, genre } = req.body;
     const artistId = req.user?.id;
     const musicFile = req?.file;
 
@@ -29,7 +31,7 @@ export const uploadSongs = async (
         .json({ status: 400, message: "Music file is required." });
     }
 
-    if (!title || !duration || !year || !tags || !genre) {
+    if (!title || !description || !duration || !year || !tags || !genre) {
       return res
         .status(400)
         .json({ status: 400, message: "Please fill all fields" });
@@ -56,6 +58,7 @@ export const uploadSongs = async (
 
     const newSong = await SongModel.create({
       title,
+      description,
       duration,
       year,
       tags,
@@ -297,6 +300,7 @@ export const getLatestSongs = async (
     const songs = await SongModel.find({
       createdAt: { $gte: thirtyDaysAgo },
     })
+      .sort({ updatedAt: -1 })
       .skip(Number(page) * Number(size))
       .limit(Number(size))
       .exec();
@@ -317,6 +321,62 @@ export const getLatestSongs = async (
     return res.status(500).json({
       status: 500,
       message: "An error occurred while fetching new releases",
+    });
+  }
+};
+
+export const getRecentlyPlayedSongs = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?._id;
+    const { page = 0, size = 10 } = req.query;
+
+    if (!userId) {
+      return res.status(401).json({
+        status: 401,
+        message: "Unauthorized: User not found",
+      });
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const recentSongs = await playbackModel
+      .find({ user: userId })
+      .populate("song")
+      .sort({ updatedAt: -1 })
+      .skip(Number(page) * Number(size))
+      .limit(Number(size));
+
+    console.log(recentSongs);
+
+    const transformedSongs = recentSongs.map((playback: any) => ({
+      title: playback.song?.title,
+      year: playback.song?.year,
+      description: playback.song.description,
+      duration: playback.song.duration,
+      tags: playback.song.tags,
+      genre: playback.song.genre,
+    }));
+
+    return res.status(200).json({
+      status: 200,
+      message: "Retrieved all 'Recent' songs successfully",
+      data: transformedSongs,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while fetching recently played songs",
+      error: error.message,
     });
   }
 };
