@@ -101,3 +101,46 @@ export const clearNotifications = async (
     });
   }
 };
+
+export const notificationReadStatus = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    const { isRead } = req.body;
+
+    if (typeof isRead !== "boolean") {
+      return res.status(400).json({
+        status: 400,
+        message: "'isRead' field must be a boolean",
+      });
+    }
+
+    const notification = await NotificationModel.findByIdAndUpdate(
+      id,
+      { isRead },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({
+        status: 404,
+        message: "Notification not found",
+      });
+    }
+
+    return res.status(201).json({
+      status: 201,
+      message: "Notification successfully marked",
+      data: notification,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while updating the notification",
+    });
+  }
+};
