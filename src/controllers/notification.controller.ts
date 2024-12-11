@@ -21,6 +21,7 @@ export const getNotification = async (
       status: 200,
       message: "Retrieve notification successfully",
       data: {
+        id: notification.id,
         user: notification.user,
         title: notification.title,
         message: notification.message,
@@ -66,8 +67,8 @@ export const pushNotification = async (
       isRead,
     });
 
-    return res.status(200).json({
-      status: 200,
+    return res.status(201).json({
+      status: 201,
       message: "Push notification activated successfully",
       data: newNotification,
     });
@@ -75,6 +76,28 @@ export const pushNotification = async (
     return res.status(500).json({
       status: 500,
       message: "An error occurred while activating the push notification",
+    });
+  }
+};
+
+export const clearNotifications = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id;
+    await NotificationModel.deleteMany({ userId });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Notifications deleted successfully",
+      data: {},
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 500,
+      message: "An error occurred while clearing notifications",
     });
   }
 };
