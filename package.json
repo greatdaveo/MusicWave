@@ -4,7 +4,7 @@
   "description": "The MusicWave API.",
   "main": "src/server.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest --config jest.config.ts --detectOpenHandles --coverage --maxWorkers=1",
     "start": "node dist/server.js"
   },

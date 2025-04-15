@@ -8,7 +8,6 @@
         "skipLibCheck": true,
         "moduleResolution": "Node16",
         "outDir": "build",
-        "types": ["jest"],
         "allowSyntheticDefaultImports": true, // Optional for compatibility with CommonJS modules
         "experimentalDecorators": true,
         "typeRoots": ["./node_modules/@types", "./src/types"]
