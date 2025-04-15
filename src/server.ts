@@ -15,6 +15,8 @@ import SongRoute from "./routes/song.route";
 import PlaylistRoute from "./routes/playlist.route";
 import ArtisteRoute from "./routes/artiste.route";
 import NotificationRoute from "./routes/notification.route";
+// Docs
+import { setupSwaggerDocs } from "./swagger.config";
 
 export const app = express();
 app.use(cookieParser());
@@ -59,6 +61,8 @@ export const Main = () => {
   app.use("/api", PlaylistRoute);
   app.use("/api", ArtisteRoute);
   app.use("/api", NotificationRoute);
+
+  setupSwaggerDocs(app);
 
   logging.info("----------------------------------------");
   logging.info("Define Controller Routing");

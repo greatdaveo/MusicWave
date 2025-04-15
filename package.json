@@ -1,46 +1,53 @@
 {
-    "name": "music-wave",
-    "version": "24.1.1",
-    "description": "The MusicWave API.",
-    "main": "src/server.ts",
-    "scripts": {
-        "build": "rm -rf build/ && tsc -p tsconfig.build.json",
-        "test": "jest --config jest.config.ts --detectOpenHandles --coverage --maxWorkers=1",
-        "start": "npx nodemon"
-    },
-    "keywords": [
-        "decorators",
-        "typescript",
-        "express",
-        "routing"
-    ],
-    "author": "David Olowomeye",
-    "devDependencies": {
-        "@types/bcryptjs": "^2.4.6",
-        "@types/cookie-parser": "^1.4.7",
-        "@types/express": "^4.17.21",
-        "@types/jest": "^29.5.5",
-        "@types/jsonwebtoken": "^9.0.7",
-        "@types/multer": "^1.4.12",
-        "@types/node": "^20.10.6",
-        "@types/supertest": "^6.0.2",
-        "i": "^0.3.7",
-        "jest": "^29.7.0",
-        "npm": "^10.9.0",
-        "supertest": "^6.3.3",
-        "ts-jest": "^29.1.1",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.3.3"
-    },
-    "dependencies": {
-        "bcryptjs": "^2.4.3",
-        "cookie-parser": "^1.4.7",
-        "dotenv": "^16.4.4",
-        "express": "^4.18.2",
-        "jsonwebtoken": "^9.0.2",
-        "mongodb": "^6.10.0",
-        "mongoose": "^8.8.1",
-        "multer": "^1.4.5-lts.1",
-        "reflect-metadata": "^0.2.1"
-    }
+  "name": "music-wave",
+  "version": "24.1.1",
+  "description": "The MusicWave API.",
+  "main": "src/server.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config jest.config.ts --detectOpenHandles --coverage --maxWorkers=1",
+    "start": "node dist/server.js"
+  },
+  "keywords": [
+    "decorators",
+    "typescript",
+    "express",
+    "routing"
+  ],
+  "author": "David Olowomeye",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.5",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^20.10.6",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "i": "^0.3.7",
+    "jest": "^29.7.0",
+    "npm": "^10.9.0",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bullmq": "^5.48.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.4",
+    "express": "^4.18.2",
+    "ioredis": "^5.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.1",
+    "multer": "^1.4.5-lts.1",
+    "redoc-express": "^2.1.0",
+    "reflect-metadata": "^0.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
 }
