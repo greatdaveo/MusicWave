@@ -82,6 +82,6 @@ npm run test
 
 ## 🧑‍💻 Author
 
-Made with ❤️ by [Your Name] – [GitHub](https://github.com/greatdaveo)
+Made with ❤️ by David Olowomeye – [GitHub](https://github.com/greatdaveo)
 
 > 🎧 MusicWave makes streaming personalized and powerful — for users and artists alike.
