@@ -11,6 +11,11 @@ const options = {
       description:
         "MusicWave is a backend API that powers a music streaming experience. Users can stream songs, create playlists, follow artists, and more.",
     },
+    servers: [
+      {
+        url: "https://musicwave.onrender.com",
+      },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -22,12 +27,14 @@ const options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ["src/docs/**/*.ts"],
+  apis: ["src/docs/**/*.ts", "./dist/routes/**/*.js"],
 };
 
 const swaggerSpec = swaggerJSdoc(options);
 
 export const setupSwaggerDocs = (app: Express) => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log(`📘 Swagger Docs running at http://localhost:3000/api-docs`);
+  console.log(
+    `📘 Swagger Docs running at https://musicwave.onrender.com/api-docs/`
+  );
 };
