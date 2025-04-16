@@ -58,7 +58,7 @@ npm run dev
 
 All protected routes require a Bearer Token:
 
-- First, login at `/api/login`
+- First, login at `/api/auth/login`
 - Copy the returned token
 - In Swagger UI, click **Authorize** and paste: `Bearer <token>`
 
@@ -66,9 +66,9 @@ All protected routes require a Bearer Token:
 
 ## 📚 API Documentation
 
-Visit: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+Visit: [https://musicwave.onrender.com/api-docs](https://musicwave.onrender.com/api-docs)
 
-🧪 Try it out online: [Open Swagger UI](http://localhost:3000/api-docs)
+🧪 Try it out online: [Open Swagger UI](https://musicwave.onrender.com/api-docs)
 
 ---
 
