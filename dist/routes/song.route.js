@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const songs_controller_1 = require("../controllers/songs.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const user_controller_1 = require("../controllers/user.controller");
+const songs_middleware_1 = require("../middleware/songs.middleware");
+const router = express_1.default.Router();
+router.get("/songs/likes", auth_middleware_1.protectedRoute, songs_controller_1.getLikedSongs);
+router.get("/artist/songs", auth_middleware_1.protectedRoute, user_controller_1.getFollowedArtiste);
+router.get("/songs/new", auth_middleware_1.protectedRoute, songs_controller_1.getLatestSongs);
+router.get("/songs/recent", auth_middleware_1.protectedRoute, songs_controller_1.getRecentlyPlayedSongs);
+router.get("/songs/recommended", auth_middleware_1.protectedRoute, songs_controller_1.songRecommendation);
+router.get("/songs", auth_middleware_1.protectedRoute, songs_controller_1.getSongs);
+router.get("/songs/:id", auth_middleware_1.protectedRoute, songs_controller_1.getSingleSong);
+router.post("/songs/likes/:songId", auth_middleware_1.protectedRoute, songs_controller_1.saveLikedSongs);
+router.post("/songs/upload", auth_middleware_1.protectedRoute, auth_middleware_1.artisteOnly, songs_middleware_1.upload.single("music"), songs_controller_1.uploadSongs);
+router.post("/songs/:songId/share", auth_middleware_1.protectedRoute, songs_controller_1.shareSong);
+router.post("/songs/:id/state", auth_middleware_1.protectedRoute, songs_controller_1.PlayBackState);
+exports.default = router;

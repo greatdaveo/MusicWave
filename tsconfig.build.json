@@ -1,7 +1,21 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["**/*.test.ts", "**/__tests__/**", "test", "node_modules"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "test",
+    "node_modules",
+    "jest.config.ts"
+  ],
   "compilerOptions": {
-    "types": []
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "CommonJS",
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "types": ["node"]
   }
 }
